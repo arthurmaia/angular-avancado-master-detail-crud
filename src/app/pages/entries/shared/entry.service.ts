@@ -3,22 +3,22 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-import { Category } from './category.model';
+import { Entry } from './entry.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CategoryService {
-  private apiPath: string = 'api/categories';
+export class EntryService {
+  private apiPath: string = 'api/entries';
 
   constructor(private http: HttpClient) {}
 
-  private jsonDataToCategories(jsonData: any[]): Category[] {
-    const categories: Category[] = [];
+  private jsonDataToCategories(jsonData: any[]): Entry[] {
+    const entries: Entry[] = [];
 
-    jsonData.forEach((element) => categories.push(element as Category));
+    jsonData.forEach((element) => entries.push(element as Entry));
 
-    return categories;
+    return entries;
   }
 
   private handleError(error: any): Observable<any> {
@@ -26,36 +26,36 @@ export class CategoryService {
     return throwError(() => error);
   }
 
-  private jsonDataToCategory(jsonData: any): Category {
-    return jsonData as Category;
+  private jsonDataToEntry(jsonData: any): Entry {
+    return jsonData as Entry;
   }
 
-  getAll(): Observable<Category[]> {
+  getAll(): Observable<Entry[]> {
     return this.http
       .get(this.apiPath)
       .pipe(catchError(this.handleError), map(this.jsonDataToCategories));
   }
 
-  getById(id: number): Observable<Category> {
+  getById(id: number): Observable<Entry> {
     const url = `${this.apiPath}/${id}`;
 
     return this.http
       .get(url)
-      .pipe(catchError(this.handleError), map(this.jsonDataToCategory));
+      .pipe(catchError(this.handleError), map(this.jsonDataToEntry));
   }
 
-  create(category: Category): Observable<Category> {
+  create(entry: Entry): Observable<Entry> {
     return this.http
-      .post(this.apiPath, category)
-      .pipe(catchError(this.handleError), map(this.jsonDataToCategory));
+      .post(this.apiPath, entry)
+      .pipe(catchError(this.handleError), map(this.jsonDataToEntry));
   }
 
-  update(category: Category): Observable<Category> {
-    const url = `${this.apiPath}/${category.id}`;
+  update(entry: Entry): Observable<Entry> {
+    const url = `${this.apiPath}/${entry.id}`;
 
-    return this.http.put(url, category).pipe(
+    return this.http.put(url, entry).pipe(
       catchError(this.handleError),
-      map(() => category)
+      map(() => entry)
     );
   }
 
